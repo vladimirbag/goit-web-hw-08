@@ -1,17 +1,14 @@
-from mongoengine import Document, StringField, ReferenceField, ListField, connect
+import os
+from dotenv import load_dotenv
+from mongoengine import connect
 
-# Підключення до хмарної MongoDB
-connect(host='mongodb+srv://<username>:<password>@cluster.mongodb.net/<database>?retryWrites=true&w=majority')
+# Завантажуємо змінні середовища
+load_dotenv()
 
-# Модель для авторів
-class Author(Document):
-    fullname = StringField(required=True, unique=True)
-    born_date = StringField()
-    born_location = StringField()
-    description = StringField()
+# Отримуємо значення змінної
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/email_sender")
 
-# Модель для цитат
-class Quote(Document):
-    tags = ListField(StringField())
-    author = ReferenceField(Author, reverse_delete_rule=2)  # Reference to Author
-    quote = StringField(required=True)
+# Підключення до бази даних
+connect(host=MONGO_URI)
+
+print(f"✅ Підключено до MongoDB: {MONGO_URI}")
